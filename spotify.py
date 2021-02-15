@@ -15,17 +15,19 @@ with open("token.json") as file:
 
 API_TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token"
 API_ENDPOINT = "https://api.spotify.com/v1/me"
+SEARCH_API = "https://api.spotify.com/v1/search"
 
 class SpotifyApp:
     def __init__(self):
         self.headers_token = {"Authorization": f"Bearer {spotify_bearer_token}"}
+        self.id = None
         self.refresh_token()
+
 
     def refresh_token(self):
         response = requests.get(API_ENDPOINT, headers=self.headers_token)
 
         if response.status_code == 401:
-            print("token expired")
             with open("token.json") as file:
                 token_data = json.load(file)
                 refresh_token = token_data["refresh_token"]
@@ -39,6 +41,17 @@ class SpotifyApp:
             with open("token.json", "w") as file:
                 json.dump(token_data, file, indent=4)
 
-            print("token refreshed")
+            response = requests.get(API_ENDPOINT, headers=self.headers_token)
+            self.id = response.json()["id"]
         else:
-            print("token is valid")
+            self.id = response.json()["id"]
+
+    def search_track(self, track_name, artist):
+        parameters = {
+            "q": f"track:{track_name}+artist:{artist}",
+            "type": "track",
+
+        }
+
+        response = requests.get(SEARCH_API, params=parameters, headers=self.headers_token)
+        return response.json()
