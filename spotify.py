@@ -53,4 +53,4 @@ class SpotifyApp:
         try:
             return response.json()["tracks"]["items"][0]["uri"]
         except IndexError:
-            return "No Data"
+            return None

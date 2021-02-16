@@ -24,7 +24,9 @@ for track_data in tracks_data:
 
 tracks_uri = []
 for track, artist in track_artist.items():
-    tracks_uri.append(spotify_app.search_track(track, artist))
+    track_uri = spotify_app.search_track(track, artist)
+    if track_uri != None:
+        tracks_uri.append(track_uri)
 
-with open("tracks_uri", "w") as file:
+with open("tracks_uri.json", "w") as file:
     json.dump(tracks_uri, file, indent=4)
