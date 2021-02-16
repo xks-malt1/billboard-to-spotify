@@ -43,7 +43,14 @@ class SpotifyApp:
         else:
             self.id = response.json()["id"]
 
-    def search_track(self, track_name, artist):
-        
+    def search_track(self, track_name:str, artist:str) -> str:
+        if len(track_name.split()) > 1:
+            track_name.replace(" ", "+")
+        if len(artist.split()) > 1:
+            artist.replace(" ", "+")
+
         response = requests.get(f"{SEARCH_API}?q=track:{track_name}+artist:{artist}&type=track&limit=1", headers=self.headers_token)
-        return response.json()["tracks"]["items"][0]["uri"]
+        try:
+            return response.json()["tracks"]["items"][0]["uri"]
+        except IndexError:
+            return "No Data"

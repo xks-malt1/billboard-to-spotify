@@ -4,3 +4,5 @@ __pycache__/
 .env
 playground.py
 token.txt
+tracks_uri
+songs.json

@@ -16,10 +16,15 @@ response = requests.get(url=url)
 response.raise_for_status()
 soup = BeautifulSoup(response.text, "html.parser")
 
-song_titles = soup.find_all(class_="chart-element__information__song text--truncate color--primary")
-song_titles = [song.string for song in song_titles]
-artists = soup.find_all(class_="chart-element__information__artist text--truncate color--secondary")
-artists = [artist.string for artist in artists]
-print(song_titles[0])
-print(artists[0])
-print(spotify_app.search_track(song_titles[0], artists[0]))
+tracks_data = soup.find_all(class_="chart-element__information")
+track_artist = {}
+for track_data in tracks_data:
+    data = track_data.findChildren()
+    track_artist[data[0].getText()] = data[1].getText()
+
+tracks_uri = []
+for track, artist in track_artist.items():
+    tracks_uri.append(spotify_app.search_track(track, artist))
+
+with open("tracks_uri", "w") as file:
+    json.dump(tracks_uri, file, indent=4)
