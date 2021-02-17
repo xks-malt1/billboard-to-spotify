@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import requests
 import base64
 
+
 load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -23,7 +24,6 @@ class SpotifyApp:
         self.headers_token = {"Authorization": f"Bearer {spotify_bearer_token}"}
         self.id = None
         self.refresh_token()
-
 
     def refresh_token(self):
         response = requests.get(API_ENDPOINT, headers=self.headers_token)
@@ -54,3 +54,23 @@ class SpotifyApp:
             return response.json()["tracks"]["items"][0]["uri"]
         except IndexError:
             return None
+
+    def create_playlist_add_tracks(self, playlist_name: str, uris_list, public=False):
+        create_playlist_endpoint = f"https://api.spotify.com/v1/users/{self.id}/playlists"
+
+        playlist_data = {
+            "name": playlist_name,
+            "public": public
+        }
+
+        response = requests.post(url=create_playlist_endpoint, json=playlist_data, headers=self.headers_token)
+        playlist_id = response.json()["id"]
+
+        add_tracks_endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+        tracks_data = {
+            "uris": uris_list
+        }
+
+        response = requests.post(url=add_tracks_endpoint, json=tracks_data, headers=self.headers_token)
+

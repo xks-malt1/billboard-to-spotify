@@ -2,9 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from spotify import SpotifyApp
 import json
+
 spotify_app = SpotifyApp()
-
-
 
 
 
@@ -28,5 +27,5 @@ for track, artist in track_artist.items():
     if track_uri != None:
         tracks_uri.append(track_uri)
 
-with open("tracks_uri.json", "w") as file:
-    json.dump(tracks_uri, file, indent=4)
+
+spotify_app.create_playlist_add_tracks(f"{date} Billboard 100", tracks_uri)
