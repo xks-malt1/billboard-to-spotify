@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from spotify import SpotifyApp
-import json
 
 spotify_app = SpotifyApp()
 
